@@ -17,15 +17,15 @@ import maya.api.OpenMaya as om
 
 
 
-###############
-#   FIXINGS   #
-###############
+##############
+#   FIXERS   #
+##############
 
 # the fix functions needs to go here eventually
 # Example:
 # def shapeNames_fix():
 
-# NAMING FIXS
+# NAMING FIXERS
 
 def trailingNumbers_fix():
     return trailingNumbers_fix
@@ -40,7 +40,7 @@ def namespaces_fix():
     return namespaces_fix
 
 
-# TOPOLOGY FIXS
+# TOPOLOGY FIXERS
 def triangles_fix():
     return triangles_fix
 
@@ -72,7 +72,7 @@ def starlike_fix():
     return starlike_fix
 
 
-# UV FIXS
+# UV FIXERS
 
 def selfPenetratingUVs_fix():
     return selfPenetratingUVs_fix
@@ -87,14 +87,14 @@ def crossBorder_fix():
     return crossBorder_fix
 
 
-# GENERAL FIXS
+# GENERAL FIXERS
 
 def layers_fix():
     return layers_fix
         
 def history_fix(self, list):
-        cmds.delete( ch = True )
-        history_fix = "Deleted construction history"
+    cmds.delete( ch = True )
+    history_fix = "Deleted construction history"
     return history_fix
 
 def shaders_fix():
@@ -128,7 +128,7 @@ def selectionSets_fix():
                     'initialShadingGroup',
                     'defaultObjectSet',
                     'defaultCreaseDataSet'
-                ]
+                    ]
     #Get user sets from difference between both lists
     userSets = set(allSets).difference(set(defaultSets))
 
