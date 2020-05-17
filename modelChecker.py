@@ -138,8 +138,8 @@ def selectionSets_fix():
     selectionSets_fix = "Deleted all user sets in scene"
     return selectionSets_fix
 
-
-
+def nodesInTabs_fix():
+    return nodesInTabs_fix
 
 
 ##############
@@ -491,6 +491,22 @@ def uncenteredPivots(self, list):
             uncenteredPivots.append(obj)
     return uncenteredPivots
 
+def parentGeometry(self, list):
+    parentGeometry = []
+    shapeNode = False
+    for obj in list:
+        shapeNode = False
+        parents = cmds.listRelatives(obj, p = True, fullPath = True)
+        if parents is not None:
+            for i in parents:
+                parentsChildren = cmds.listRelatives(i, fullPath = True)
+                for l in parentsChildren:
+                    if cmds.nodeType(l) == 'mesh':
+                        shapeNode = True
+        if shapeNode == True:
+            parentGeometry.append(obj)
+    return parentGeometry
+
 def emptyGroups(self, list):
     emptyGroups = []
     for obj in list:
@@ -517,22 +533,20 @@ def selectionSets(self, list):
     selectionSets = userSets
     return selectionSets
 
-def parentGeometry(self, list):
-    parentGeometry = []
-    shapeNode = False
-    for obj in list:
-        shapeNode = False
-        parents = cmds.listRelatives(obj, p = True, fullPath = True)
-        if parents is not None:
-            for i in parents:
-                parentsChildren = cmds.listRelatives(i, fullPath = True)
-                for l in parentsChildren:
-                    if cmds.nodeType(l) == 'mesh':
-                        shapeNode = True
-        if shapeNode == True:
-            parentGeometry.append(obj)
-    return parentGeometry
 
+def nodesInTabs(self, list):
+    nodesInTabs = []
+    outNodes = False
+    for obj in list:
+        outNodes = False
+        objects = cmds.listConnections(obj, d=True, s=False)
+        if objects is not None:
+            for outNodes in objects:
+                if 'MayaNodeEditorSavedTabsInfo' in outNodes:
+                    outNodes = True
+        if outNodes == True:
+            nodesInTabs.append(obj)
+    return nodesInTabs
 
 
 ###################
@@ -622,6 +636,7 @@ class modelChecker(QtWidgets.QMainWindow):
                 'parentGeometry_general_1_0',
                 'emptyGroups_general_1_0',
                 'selectionSets_general_1_0',
+                'nodesInTabs_general_1_0',
 
                 'triangles_topology_0_0',
                 'ngons_topology_0_0',
