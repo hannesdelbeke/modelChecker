@@ -6,19 +6,165 @@
     https://github.com/JakobJK/modelChecker
 """
 
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 from functools import partial
+from datetime import datetime
 
 import sys
+import os
+import socket
+import getpass
 import maya.cmds as cmds
 import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 
+
+# GENERAL VARS
+version = "0.1.0"
+winWidth = 600
+winHeight = 900
+reportWidth = 200
+
+sceneFullPath = cmds.file(q=True, sn=True)
+sceneName = os.path.basename(sceneFullPath)
+scenePath = os.path.dirname(sceneFullPath) + "/"
+username = str(getpass.getuser())
+hostname = str(socket.gethostname())
+homedir = os.environ['HOME']
+
+
+
+##############
+#   FIXERS   #
+##############
+
 # the fix functions needs to go here eventually
 # Example:
 # def shapeNames_fix():
-# Naming checks
+
+# NAMING FIXERS
+
+def trailingNumbers_fix():
+    return trailingNumbers_fix
+
+def duplicatedNames_fix():
+    return duplicatedNames_fix
+
+def shapeNames_fix():
+    return shapeNames_fix
+
+def namespaces_fix():
+    return namespaces_fix
+
+
+# TOPOLOGY FIXERS
+def triangles_fix():
+    return triangles_fix
+
+def ngons_fix():
+    return ngons_fix
+
+def openEdges_fix():
+    return openEdges_fix
+
+def poles_fix():
+    return poles_fix
+
+def hardEdges_fix():
+    return hardEdges_fix
+
+def lamina_fix():
+    return lamina_fix
+
+def zeroAreaFaces_fix():
+    return zeroAreaFaces_fix
+
+def zeroLengthEdges_fix():
+    return zeroLengthEdges_fix
+
+def noneManifoldEdges_fix():
+    return noneManifoldEdges_fix
+
+def starlike_fix():
+    return starlike_fix
+
+
+# UV FIXERS
+
+def selfPenetratingUVs_fix():
+    return selfPenetratingUVs_fix
+
+def missingUVs_fix():
+    return missingUVs_fix
+
+def uvRange_fix():
+    return uvRange_fix
+
+def crossBorder_fix():
+    return crossBorder_fix
+
+
+# GENERAL FIXERS
+
+def layers_fix():
+    return layers_fix
+        
+def history_fix(self, list):
+    cmds.delete( ch = True )
+    history_fix = "Deleted construction history"
+    return history_fix
+
+def shaders_fix():
+    return shaders_fix
+
+def unfrozenTransforms_fix():
+    return unfrozenTransforms_fix
+
+def uncenteredPivots_fix():
+    return uncenteredPivots_fix
+
+def parentGeometry_fix():
+    return parentGeometry_fix
+
+def emptyGroups_fix():
+    return emptyGroups_fix
+
+def selectionSets_fix():
+    #Create list getting all sets in scene
+    allSets = cmds.listSets( allSets=True )
+    
+    #Create list with all default sets
+    defaultSets = [ 'defaultLastHiddenSet',
+                    'defaultHideFaceDataSet', 
+                    'defaultCreaseDataSet'
+                    'defaultObjectSet',
+                    'defaultLightSet',
+                    'internal_standInSE',
+                    'internal_soloSE',
+                    'initialParticleSE',
+                    'initialShadingGroup',
+                    'defaultObjectSet',
+                    'defaultCreaseDataSet'
+                    ]
+    #Get user sets from difference between both lists
+    userSets = set(allSets).difference(set(defaultSets))
+
+    #Remove user sets
+    cmds.delete(userSets)
+
+    selectionSets_fix = "Deleted all user sets in scene"
+    return selectionSets_fix
+
+def nodesInTabs_fix():
+    return nodesInTabs_fix
+
+
+##############
+#   CHECKS   #
+##############
+
+# NAMING CHECKS
 
 def trailingNumbers(self, list):
     numbers = ['0','1','2','3','4','5','6','7','8','9']
@@ -53,8 +199,9 @@ def shapeNames(self, list):
                 shapeNames.append(obj)
     return shapeNames
 
-# Topology checks
 
+
+# TOPOLOGY CHECKS
 
 def triangles(self, list):
     triangles = []
@@ -239,7 +386,8 @@ def starlike(self, list):
         selIt.next()
     return starlike
 
-#UV checks
+
+# UV CHECKS
 
 def missingUVs(self, list):
     missingUVs = []
@@ -310,7 +458,8 @@ def crossBorder(self, list):
     	selIt.next()
     return crossBorder
 
-# General checks
+
+# GENERAL CHECKS
 
 def unfrozenTransforms(self, list):
     unfrozenTransforms = []
@@ -360,14 +509,6 @@ def uncenteredPivots(self, list):
             uncenteredPivots.append(obj)
     return uncenteredPivots
 
-def emptyGroups(self, list):
-    emptyGroups = []
-    for obj in list:
-        children = cmds.listRelatives(obj, ad = True)
-        if children is None:
-            emptyGroups.append(obj)
-    return emptyGroups
-
 def parentGeometry(self, list):
     parentGeometry = []
     shapeNode = False
@@ -384,6 +525,52 @@ def parentGeometry(self, list):
             parentGeometry.append(obj)
     return parentGeometry
 
+def emptyGroups(self, list):
+    emptyGroups = []
+    for obj in list:
+        children = cmds.listRelatives(obj, ad = True)
+        if children is None:
+            emptyGroups.append(obj)
+    return emptyGroups
+
+def selectionSets(self, list):
+    allSets = cmds.listSets( allSets=True )
+    defaultSets = [ 'defaultLastHiddenSet',
+                    'defaultHideFaceDataSet', 
+                    'defaultCreaseDataSet'
+                    'defaultObjectSet',
+                    'defaultLightSet',
+                    'internal_standInSE',
+                    'internal_soloSE',
+                    'initialParticleSE',
+                    'initialShadingGroup',
+                    'defaultObjectSet',
+                    'defaultCreaseDataSet'
+                ]
+    userSets = set(allSets).difference(set(defaultSets))    
+    selectionSets = userSets
+    return selectionSets
+
+
+def nodesInTabs(self, list):
+    nodesInTabs = []
+    outNodes = False
+    for obj in list:
+        outNodes = False
+        objects = cmds.listConnections(obj, d=True, s=False)
+        if objects is not None:
+            for outNodes in objects:
+                if 'MayaNodeEditorSavedTabsInfo' in outNodes:
+                    outNodes = True
+        if outNodes == True:
+            nodesInTabs.append(obj)
+    return nodesInTabs
+
+
+###################
+#   UI BUILDIND   #
+###################
+
 def getMainWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
     mainWindow = wrapInstance(long(main_window_ptr), QtWidgets.QWidget)
@@ -396,7 +583,7 @@ class modelChecker(QtWidgets.QMainWindow):
 
         # Creates object, Title Name and Adds a QtWidget as our central widget/Main Layout
         self.setObjectName("modelCheckerUI")
-        self.setWindowTitle("Model Checker")
+        self.setWindowTitle("Model Checker" + ' ' + 'v' + version)
         mainLayout = QtWidgets.QWidget(self)
         self.setCentralWidget(mainLayout)
 
@@ -435,9 +622,9 @@ class modelChecker(QtWidgets.QMainWindow):
         self.reportBoxLayout.addWidget(reportLabel)
         self.report.addLayout(self.reportBoxLayout)
 
-        self.reportOutputUI = QtWidgets.QPlainTextEdit()
+        self.reportOutputUI = QtWidgets.QTextEdit()
 
-        self.reportOutputUI.setMinimumWidth(600)
+        self.reportOutputUI.setMinimumWidth(reportWidth)
         self.report.addWidget(self.reportOutputUI)
 
         self.checkRunButton = QtWidgets.QPushButton("Run All Checked")
@@ -451,8 +638,15 @@ class modelChecker(QtWidgets.QMainWindow):
 
         self.reportBoxLayout.addWidget(self.clearButton)
 
+
+        self.saveButton = QtWidgets.QPushButton("Save")
+        self.saveButton.setMaximumWidth(150)
+        self.saveButton.clicked.connect(partial(self.saveReport))
+
+        self.reportBoxLayout.addWidget(self.saveButton)
+
         # Adding the stretch element to the checks UI to get everything at the top
-        self.resize(1000,900)
+        self.resize(winWidth,winHeight)
         self.list = [
                 'trailingNumbers_naming_1_0',
                 'duplicatedNames_naming_1_0',
@@ -466,6 +660,8 @@ class modelChecker(QtWidgets.QMainWindow):
                 'uncenteredPivots_general_1_0',
                 'parentGeometry_general_1_0',
                 'emptyGroups_general_1_0',
+                'selectionSets_general_1_0',
+                'nodesInTabs_general_1_0',
 
                 'triangles_topology_0_0',
                 'ngons_topology_0_0',
@@ -517,7 +713,7 @@ class modelChecker(QtWidgets.QMainWindow):
             self.categoryCollapse[obj] = QtWidgets.QPushButton(u'\u2193'.encode('utf-8'))
             self.categoryCollapse[obj].clicked.connect(partial(self.toggleUI, obj))
             self.categoryCollapse[obj].setMaximumWidth(30)
-            self.categoryButton[obj].setStyleSheet("background-color: grey; text-transform: uppercase; color: #000000; font-size: 18px;")
+            self.categoryButton[obj].setStyleSheet("background-color: #666; text-transform: uppercase; color: #222; font-size: 11px;")
             self.categoryButton[obj].clicked.connect(partial(self.checkCategory, obj))
             self.categoryHeader[obj].addWidget(self.categoryButton[obj])
             self.categoryHeader[obj].addWidget(self.categoryCollapse[obj])
@@ -563,7 +759,7 @@ class modelChecker(QtWidgets.QMainWindow):
             self.commandFixButton[name] = QtWidgets.QPushButton("Fix")
 
             if fix == 1:
-                self.commandRunButton[name].clicked.connect(partial(self.commandToRun, [eval(name + "_fix")]))
+                self.commandFixButton[name].clicked.connect(partial(self.commandToRun, [eval(name + "_fix")]))
 
             self.commandFixButton[name].setEnabled(False)
             self.commandFixButton[name].setMaximumWidth(40)
@@ -592,6 +788,13 @@ class modelChecker(QtWidgets.QMainWindow):
         self.checkButtonsLayout.addWidget(self.uncheckAllButton)
         self.checkButtonsLayout.addWidget(self.invertCheckButton)
         self.checkButtonsLayout.addWidget(self.checkAllButton)
+
+
+
+
+#################
+#  UI MANAGING  #
+#################
 
     # Definitions to manipulate the UI
     def setTopNode(self):
@@ -690,28 +893,39 @@ class modelChecker(QtWidgets.QMainWindow):
         return nodes
 
     def commandToRun(self, commands):
+        cdate = str(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
         # Run FilterNodes
         nodes = self.filterNodes()
         self.reportOutputUI.clear()
         if len(nodes) == 0:
             self.reportOutputUI.insertPlainText("Error - No nodes to check\n")
         else:
+            if sceneName != "":
+                self.reportOutputUI.insertHtml("Scene: " + sceneName + "<br>")
+            else:
+                self.reportOutputUI.insertHtml("Scene: " + "Untitled" + "<br>")
+            
+            self.reportOutputUI.insertHtml("Date: " + cdate + "<br>")
+            self.reportOutputUI.insertHtml("User: " + username + "<br>")
+            self.reportOutputUI.insertHtml("Computer: " + hostname + "<br>")
+            self.reportOutputUI.insertHtml("____________________________<br>")
+            
             for command in commands:
                 # For Each node in filterNodes, run command.
                 self.errorNodes = command(self, nodes)
                 # Return error nodes
                 if self.errorNodes:
-                    self.reportOutputUI.insertPlainText(command.func_name + " -- FAILED\n")
+                    self.reportOutputUI.insertHtml("<br>" + command.func_name + "<font color='#be5b5b'> [ FAILED ] <br>" )
                     for obj in self.errorNodes:
-                        self.reportOutputUI.insertPlainText("    " + obj + "\n")
+                        self.reportOutputUI.insertHtml(" |___  " + obj + "<br>")
 
                     self.errorNodesButton[command.func_name].setEnabled(True)
                     self.errorNodesButton[command.func_name].clicked.connect(partial(self.selectErrorNodes, self.errorNodes))
                     self.commandLabel[command.func_name].setStyleSheet("background-color: #664444;")
                 else:
-                    self.commandLabel[command.func_name].setStyleSheet("background-color: #446644;")
-                    self.reportOutputUI.insertPlainText(command.func_name + " -- SUCCES\n")
+                    self.reportOutputUI.insertHtml("<br>" + command.func_name + "<font color='#3da94d'> [ SUCCESS ] <br>" )
                     self.errorNodesButton[command.func_name].setEnabled(False)
+                    self.commandLabel[command.func_name].setStyleSheet("background-color: #446644;")
 
     # Write the report to report UI.
     def sanityCheck(self):
@@ -731,10 +945,25 @@ class modelChecker(QtWidgets.QMainWindow):
 
     def selectErrorNodes(self, list):
         cmds.select(list)
+        
+    # Write the report to file
+    def saveReport(self):
+        cdate = str(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+        text = self.reportOutputUI.toPlainText()
+        path = scenePath
+        reportFile = path + sceneName + '_' + cdate + '.txt'
+        with open(reportFile, 'w') as f:
+            f.write(text)
+            self.reportOutputUI.insertHtml("<br>____________________________<br>")
+            self.reportOutputUI.insertHtml("<font color:#ffffff> Report saved! <br>" + reportFile) 
 
+    
     #this definition needs to run the Fix
     def runFix(self, list, command):
         print ("yes")
+        #self.commandFixButton[command.func_name].setEnabled(True)
+
+
 
 
 if __name__ == '__main__':
