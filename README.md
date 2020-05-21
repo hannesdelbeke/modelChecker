@@ -2,7 +2,7 @@
 
 modelChecker is a tool written for Autodesk Maya to sanity check digital polygon models for production. It aims to be as unopinionated as possible, It gives you concise feedback, and let's you select your error nodes easily.
 
-![modelChecker](https://i.imgur.com/1PQr1S5.jpg)
+![modelChecker](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_v0.1.0.png)
 
 ## Setup
 
