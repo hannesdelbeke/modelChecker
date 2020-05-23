@@ -10,7 +10,6 @@ from PySide2 import QtCore, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 from functools import partial
 from datetime import datetime
-from time import sleep
 
 import sys
 import os
@@ -23,10 +22,9 @@ import maya.OpenMayaUI as omui
 import maya.api.OpenMaya as om
 
 
-
 # GENERAL VARS
-version = "0.1.0"
-winWidth = 600
+version = "0.1.1"
+winWidth = 694
 winHeight = 900
 reportWidth = 200
 
@@ -36,6 +34,8 @@ scenePath = os.path.dirname(sceneFullPath) + "/"
 username = str(getpass.getuser())
 hostname = str(socket.gethostname())
 homedir = os.environ['HOME']
+pyFilePath = os.path.dirname(os.path.abspath(__file__))
+
 
 
 
@@ -285,7 +285,6 @@ def triangles(self, list):
     	    faceIt.next(None)
     	selIt.next()
     return triangles
-
 
 def ngons(self, list):
     ngons = []
@@ -661,55 +660,66 @@ class modelChecker(QtWidgets.QMainWindow):
         self.report = QtWidgets.QVBoxLayout()
         self.checks = QtWidgets.QVBoxLayout()
 
-        columns.addLayout(self.checks)
-        columns.addLayout(self.report)
+        # Set columns for each layout using stretch policy to psudo fixed width for the 'checks' layout
+        columns.addLayout(self.checks, 1)
+        columns.addLayout(self.report, 99)
+
 
         # Adding UI ELEMENTS FOR CHECKS
         selectedModelVLayout = QtWidgets.QHBoxLayout()
         self.checks.addLayout(selectedModelVLayout)
 
         selectedModelLabel = QtWidgets.QLabel("Top Node")
-        selectedModelLabel.setMaximumWidth(60)
+        selectedModelLabel.setFixedWidth(60)
 
         self.selectedTopNode_UI = QtWidgets.QLineEdit("")
-        self.selectedTopNode_UI.setMaximumWidth(200)
+        self.selectedTopNode_UI.setMinimumWidth(270)
 
         self.selectedModelNodeButton = QtWidgets.QPushButton("Select")
-        self.selectedModelNodeButton.setMaximumWidth(60)
+        self.selectedModelNodeButton.setFixedWidth(65)
         self.selectedModelNodeButton.clicked.connect(self.setTopNode)
 
         selectedModelVLayout.addWidget(selectedModelLabel)
         selectedModelVLayout.addWidget(self.selectedTopNode_UI)
         selectedModelVLayout.addWidget(self.selectedModelNodeButton)
 
-        # Adding UI elements to the repport
-        self.reportBoxLayout = QtWidgets.QHBoxLayout()
-        reportLabel = QtWidgets.QLabel("Report:")
 
-        self.reportBoxLayout.addWidget(reportLabel)
+        # Adding UI elements to the repport
+        self.toolbarLayout = QtWidgets.QHBoxLayout()
+        self.report.addLayout(self.toolbarLayout)
+
+        self.reportBoxLayout = QtWidgets.QHBoxLayout()
         self.report.addLayout(self.reportBoxLayout)
 
+        self.reportButtonsLayout = QtWidgets.QHBoxLayout()
+        self.report.addLayout(self.reportButtonsLayout)
+
         self.reportOutputUI = QtWidgets.QTextEdit()
-
         self.reportOutputUI.setMinimumWidth(reportWidth)
-        self.report.addWidget(self.reportOutputUI)
 
-        self.checkRunButton = QtWidgets.QPushButton("Run All Checked")
-        self.checkRunButton.clicked.connect(self.sanityCheck)
+        self.aboutButton = QtWidgets.QPushButton()
+        self.aboutButton.setFlat(True)
+        self.aboutButton.setIcon(QtGui.QIcon(pyFilePath + '/modelChecker_icon.png'))
+        self.aboutButton.setIconSize(QtCore.QSize(32,32))
+        self.aboutButton.clicked.connect(partial(self.aboutText))
 
-        self.report.addWidget(self.checkRunButton)
+        reportLabel = QtWidgets.QLabel("Report:")
+        reportLabel.setMaximumWidth(40)
 
         self.clearButton = QtWidgets.QPushButton("Clear")
-        self.clearButton.setMaximumWidth(150)
+        self.clearButton.setMinimumWidth(60)
         self.clearButton.clicked.connect(partial(self.reportOutputUI.clear))
 
-        self.reportBoxLayout.addWidget(self.clearButton)
-
         self.saveButton = QtWidgets.QPushButton("Save")
-        self.saveButton.setMaximumWidth(150)
+        self.saveButton.setMinimumWidth(60)
         self.saveButton.clicked.connect(partial(self.saveReport))
 
-        self.reportBoxLayout.addWidget(self.saveButton)
+        self.toolbarLayout.addWidget(self.aboutButton, 0, QtCore.Qt.AlignRight)
+        self.reportBoxLayout.addWidget(self.reportOutputUI)
+        self.reportButtonsLayout.addWidget(reportLabel, 0, QtCore.Qt.AlignLeft)
+        self.reportButtonsLayout.addWidget(self.clearButton, 1, QtCore.Qt.AlignRight)
+        self.reportButtonsLayout.addWidget(self.saveButton, 0, QtCore.Qt.AlignRight)
+        
 
         # Adding the stretch element to the checks UI to get everything at the top
         self.resize(winWidth,winHeight)
@@ -763,6 +773,7 @@ class modelChecker(QtWidgets.QMainWindow):
         self.command = {}
         self.commandWidget = {}
         self.commandLayout = {}
+        self.commandInfo = {}
         self.commandLabel = {}
         self.commandCheckBox = {}
         self.errorNodesButton = {}
@@ -808,27 +819,32 @@ class modelChecker(QtWidgets.QMainWindow):
             
             self.command[name] = name
             
+            self.commandInfo[name] = QtWidgets.QPushButton(u'\u24d8')
+            self.commandInfo[name].setStyleSheet("color: #222;")
+            self.commandInfo[name].setFixedWidth(18)
+            self.commandInfo[name].setFlat(True)
+            self.commandInfo[name].clicked.connect(partial(self.getInfo, [eval(name)] ))
+
             self.commandLabel[name] = QtWidgets.QLabel(name)
-            self.commandLabel[name].setMinimumWidth(120)
+            self.commandLabel[name].setFixedWidth(150)
 
             self.commandCheckBox[name] = QtWidgets.QCheckBox()
             self.commandCheckBox[name].setChecked(check)
             self.commandCheckBox[name].setMaximumWidth(20)
 
             self.commandRunButton[name] = QtWidgets.QPushButton("Run")
-            self.commandRunButton[name].setMaximumWidth(30)
+            self.commandRunButton[name].setFixedWidth(40)
             self.commandRunButton[name].clicked.connect(partial(self.commandToRun, [eval(name)]))
 
             self.errorNodesButton[name] = QtWidgets.QPushButton("Select Error Nodes")
             self.errorNodesButton[name].setEnabled(False)
-            self.errorNodesButton[name].setMaximumWidth(150)
+            self.errorNodesButton[name].setFixedWidth(110)
 
             self.commandFixButton[name] = QtWidgets.QPushButton("Fix")
             self.commandFixButton[name].setEnabled(False)
-            self.commandFixButton[name].setMaximumWidth(40)
-            #if fix == 1:
-            #self.commandFixButton[name].clicked.connect(partial(self.commandToRun, [eval(name + "_fix")]))
-
+            self.commandFixButton[name].setFixedWidth(30)
+           
+            self.commandLayout[name].addWidget(self.commandInfo[name])
             self.commandLayout[name].addWidget(self.commandLabel[name])
             self.commandLayout[name].addWidget(self.commandCheckBox[name])
             self.commandLayout[name].addWidget(self.commandRunButton[name])
@@ -840,22 +856,40 @@ class modelChecker(QtWidgets.QMainWindow):
         self.checkButtonsLayout = QtWidgets.QHBoxLayout()
         self.checks.addLayout(self.checkButtonsLayout)
 
-        self.uncheckAllButton = QtWidgets.QPushButton("Uncheck All")
+        self.bottomButtonsLayout = QtWidgets.QHBoxLayout()
+        self.checks.addLayout(self.bottomButtonsLayout)
+
+        self.restoreButton = QtWidgets.QPushButton("Reset UI")
+        self.restoreButton.setMaximumWidth(60)
+        self.restoreButton.clicked.connect(self.restoreState)
+        
+        checkLabel = QtWidgets.QLabel("Check:")
+
+        self.checkAllButton = QtWidgets.QPushButton("All")
+        self.checkAllButton.setFixedWidth(45)
+        self.checkAllButton.clicked.connect(self.checkAll)
+
+        self.uncheckAllButton = QtWidgets.QPushButton("None")
+        self.uncheckAllButton.setFixedWidth(45)
         self.uncheckAllButton.clicked.connect(self.uncheckAll)
 
         self.invertCheckButton = QtWidgets.QPushButton("Invert")
+        self.invertCheckButton.setFixedWidth(45)
         self.invertCheckButton.clicked.connect(self.invertCheck)
-
-        self.checkAllButton = QtWidgets.QPushButton("Check All")
-        self.checkAllButton.clicked.connect(self.checkAll)
         
-        self.restoreButton = QtWidgets.QPushButton("Reset UI")
-        self.restoreButton.clicked.connect(self.restoreState)
-
-        self.checkButtonsLayout.addWidget(self.uncheckAllButton)
-        self.checkButtonsLayout.addWidget(self.invertCheckButton)
+        self.checkRunButton = QtWidgets.QPushButton("Run All Checked")
+        #self.checkRunButton.setFixedWidth(204)
+        self.checkRunButton.setStyleSheet("background-color: #58636b;")
+        self.checkRunButton.clicked.connect(self.sanityCheck)
+        
+        self.checkButtonsLayout.addWidget(checkLabel)
         self.checkButtonsLayout.addWidget(self.checkAllButton)
-        self.checkButtonsLayout.addWidget(self.restoreButton)
+        self.checkButtonsLayout.addWidget(self.uncheckAllButton)
+        self.checkButtonsLayout.addWidget(self.invertCheckButton, 1, QtCore.Qt.AlignLeft)
+        self.checkButtonsLayout.addWidget(self.restoreButton, 0, QtCore.Qt.AlignRight)
+        self.bottomButtonsLayout.addWidget(self.checkRunButton)
+
+
 
 
 
@@ -868,6 +902,7 @@ class modelChecker(QtWidgets.QMainWindow):
     def setTopNode(self):
         sel = cmds.ls(selection = True)
         self.selectedTopNode_UI.setText(sel[0])
+
 
     # Checks the state of a given checkbox
     def checkState(self, name):
@@ -900,12 +935,14 @@ class modelChecker(QtWidgets.QMainWindow):
             name = new[0]
             self.commandCheckBox[name].setChecked(False)
 
+
     # Sets the checkbox to the oppositve of current state
     def invertCheck(self):
         for obj in self.list:
             new = obj.split('_')
             name = new[0]
             self.commandCheckBox[name].setChecked(not self.commandCheckBox[name].isChecked())
+
 
     # Restore state button labels and clear report UI
     def restoreState(self):
@@ -916,6 +953,22 @@ class modelChecker(QtWidgets.QMainWindow):
             self.errorNodesButton[name].setEnabled(False)
             self.commandFixButton[name].setEnabled(False)        
         self.reportOutputUI.clear()
+
+    
+    # Content for about
+    def aboutText(self):
+        self.reportOutputUI.clear()
+        self.reportOutputUI.insertHtml("<br>" 
+                                        "modelChecker v" + version + "<p>"
+                                        "Reliable production ready sanity checker "
+                                        "for Autodesk Maya Sanity check polygon models in Autodesk Maya, "
+                                        "and prepare your digital assets for a smooth sailing through "
+                                        "the production pipeline. <p>"
+                                        "Authors: <ul><li>Jakob Kousholt <li> Niels Peter Kaagaard </ul><p>"
+                                        "Contributors: <ul><li>Alberto GZ </ul><p>"
+                                        "Contact: jakobjk@gmail.com <p>"
+                                         "https://github.com/JakobJK"
+                                        )
 
 
 
@@ -938,6 +991,7 @@ class modelChecker(QtWidgets.QMainWindow):
                 self.commandCheckBox[obj].setChecked(False)
             else:
                 self.commandCheckBox[obj].setChecked(True)
+
 
     ## Filter Nodes
     def filterNodes(self):
@@ -962,7 +1016,7 @@ class modelChecker(QtWidgets.QMainWindow):
                     nodes = topNode
                 nodes.append(topNode)
             else:
-                response = "Object in Top Node doesn't exists. <font color='#be5b5b'> [ FAILED ] <br>"
+                response = "Object in Top Node doesn't exists. <font color='#9c4f4f'> [ FAILED ] <br>"
                 self.reportOutputUI.clear()
                 self.reportOutputUI.insertHtml(response)
         for node in nodes:
@@ -971,13 +1025,14 @@ class modelChecker(QtWidgets.QMainWindow):
                 self.SLMesh.add(node)
         return nodes
 
+
     def commandToRun(self, commands):
         cdate = str(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
         # Run FilterNodes
         nodes = self.filterNodes()
         self.reportOutputUI.clear()
         if len(nodes) == 0:
-            self.reportOutputUI.insertHtml("No nodes to check. <font color='#be5b5b'> [ FAILED ] <br>")
+            self.reportOutputUI.insertHtml("No nodes to check. <font color='#9c4f4f'> [ FAILED ] <br>")
         else:
             if sceneName != "":
                 self.reportOutputUI.insertHtml("Scene: " + sceneName + "<br>")
@@ -995,7 +1050,7 @@ class modelChecker(QtWidgets.QMainWindow):
                 self.func_name_fix = ''
                 # Return error nodes
                 if self.errorNodes:
-                    self.reportOutputUI.insertHtml("<br>&#10752; " + command.func_name + "<font color='#be5b5b'> [ FAILED ] <br>" )
+                    self.reportOutputUI.insertHtml("<br>&#10752; " + command.func_name + "<font color='#9c4f4f'> [ FAILED ] <br>" )
                     for obj in self.errorNodes:
                         self.reportOutputUI.insertHtml("&#9492;&#9472; " + obj + "<br>")
 
@@ -1008,7 +1063,7 @@ class modelChecker(QtWidgets.QMainWindow):
                     self.commandFixButton[command.func_name].clicked.connect(partial(self.runFix, self.errorNodes, command.func_name, self.func_name_fix ))
 
                 else:
-                    self.reportOutputUI.insertHtml("<br> " + command.func_name + "<font color='#3da94d'> [ SUCCESS ] <br>" )
+                    self.reportOutputUI.insertHtml("<br> " + command.func_name + "<font color='#64a65a'> [ SUCCESS ] <br>" )
                     self.errorNodesButton[command.func_name].setEnabled(False)
                     self.commandLabel[command.func_name].setStyleSheet("background-color: #446644;")
 
@@ -1016,6 +1071,54 @@ class modelChecker(QtWidgets.QMainWindow):
                     self.commandFixButton[command.func_name].setEnabled(False)
 
 
+    # Get info for each check
+    def getInfo(self, commands): 
+        names = []
+        for obj in self.list:
+            new = obj.split('_')
+            name = new[0]
+            names.append(name)
+                 
+        infoList = [ 
+                    'trailingNumbers description',  # trailingNumbers
+                    'returns any node within the hierachy that is not uniquely named', # duplicatedNames 
+                    'returns shape nodes which does not follow the naming convention of transformNode+Shape.', # shapeNames 
+                    'returns nodes that are not in the global name space.', # namespaces
+        
+                    'checks if exists display layers.', # layers
+                    'returns any object with construction history.', # history
+                    'shaders description', # shaders
+                    'returns any object with values for translate and rotate different from 0,0,0 and for scale different from 1,1,1', # unfrozenTransforms
+                    'returns any object with pivot values different to world origin (0,0,0).<p>Fix sets to 0,0,0 all pivots.', # uncenteredPivots
+                    'parentGeometry description', # parentGeometry
+                    'return any exsting empty group. Fix will remove all empty groups.', # emptyGroups
+                    'checks if exists user selection sets. Fix will remove all user selection sets.', # selectionSets
+                    'returns any object with nodes loaded in Node Editor, that produces MayaNodesInTabs output node.<p>Fix will close all tabs in Node Editor', # nodesInTabs
+
+                    'will return a list of traingles', # triangles
+                    'will return a list of polygons with more than 4 points.', # Ngons
+                    'will return any edge that is connected to only one face', # openEdges
+                    'poles_topology', # poles
+                    'will return any edges that does not have softened normals.', # hardEdges
+                    'returns lamina faces.', # lamina
+                    'zeroAreaFaces description.', # zeroAreaFaces
+                    'returns edges which has a length less than 0.000001 units.', # zeroLengthEdges
+                    'noneManifoldEdges description.', # non-manifoldEdges
+                    'starlike description.', # starlike 
+
+                    'selfPenetratingUVs description.', # selfPenetratingUVs
+                    'returns any polygon object that does have UVs.', # missingUVs
+                    'uvRange description.', # uvRange
+                    'crossBorder description.' # crossBorder
+                    ]
+        
+        dc = dict(zip(names, infoList))
+        
+        for command in commands:
+            self.reportOutputUI.clear()
+            self.reportOutputUI.insertHtml("<br><font color=#c99936>" + command.func_name + "</font> " + dc[command.func_name] + "<p>" )
+
+        
     # Write the report to report UI.
     def sanityCheck(self):
         self.reportOutputUI.clear()
@@ -1065,9 +1168,6 @@ class modelChecker(QtWidgets.QMainWindow):
         globals()[func_name_fix](self, nodes, func_name, func_name_fix)
 
 
-
-    
-    
 
 if __name__ == '__main__':
   try:
