@@ -113,8 +113,18 @@ def crossBorder_fix(self, nodes, func_name, func_name_fix):
 # GENERAL FIXERS
 
 def layers_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name + "</font> " + undefined + "<br>")
-        
+    defaultLayer = ['defaultLayer']
+    userLayers = []
+    userLayers = cmds.ls(type = 'displayLayer')
+    # Get only user layers
+    dispLayers = set(userLayers).difference(set(defaultLayer))   
+    for layer in dispLayers:
+        cmds.delete(layer) 
+
+    #Output message and restore state buttons
+    self.reportOutputUI.insertHtml("<br> Deleted all display layers! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    restoreStateButtons(self, func_name)
+
 
 def history_fix(self, nodes, func_name, func_name_fix):
     cmds.select(nodes)
@@ -158,13 +168,20 @@ def uncenteredPivots_fix(self, nodes, func_name, func_name_fix):
     self.reportOutputUI.insertHtml("<br> Pivot reseted to 0,0,0! <font color='#3da94d'> [ SUCCESS ] <br>" )
     restoreStateButtons(self, func_name)
 
-
     
 def parentGeometry_fix(self, nodes, func_name, func_name_fix):
     self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
 
 def emptyGroups_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    emptyGroups = []
+    for obj in nodes:
+        children = cmds.listRelatives(obj, ad = True)
+        if children is None:
+            cmds.delete(obj)
+    
+    #Output message and restore state buttons
+    self.reportOutputUI.insertHtml("<br> Deleted all empty groups in scene! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    restoreStateButtons(self, func_name)
 
 
 def selectionSets_fix(self, nodes, func_name, func_name_fix):
@@ -536,11 +553,12 @@ def unfrozenTransforms(self, list):
     return unfrozenTransforms
 
 def layers(self, list):
-    layers = []
-    for obj in list:
-        layer = cmds.listConnections(obj, type = "displayLayer")
-        if layer is not None:
-            layers.append(obj)
+    defaultLayer = ['defaultLayer']
+    userLayers = []
+    userLayers = cmds.ls(type = 'displayLayer')
+    # Get only user layers
+    dispLayers = set(userLayers).difference(set(defaultLayer))    
+    layers = dispLayers
     return layers
 
 def shaders(self, list):
@@ -958,16 +976,27 @@ class modelChecker(QtWidgets.QMainWindow):
     # Content for about
     def aboutText(self):
         self.reportOutputUI.clear()
-        self.reportOutputUI.insertHtml("<br>" 
-                                        "modelChecker v" + version + "<p>"
-                                        "Reliable production ready sanity checker "
-                                        "for Autodesk Maya Sanity check polygon models in Autodesk Maya, "
-                                        "and prepare your digital assets for a smooth sailing through "
-                                        "the production pipeline. <p>"
-                                        "Authors: <ul><li>Jakob Kousholt <li> Niels Peter Kaagaard </ul><p>"
-                                        "Contributors: <ul><li>Alberto GZ </ul><p>"
-                                        "Contact: jakobjk@gmail.com <p>"
-                                         "https://github.com/JakobJK"
+        self.reportOutputUI.insertHtml( '<br>' 
+                                        '<b>Usage</b><p>'
+                                        'There are three ways to run the checks.<ol>'
+                                        '<li>If you have objects selected the checks will run on the current selection.</li><br>'
+                                        '<li>A hierachy by declaring a top node in the UI.</li><br>'
+                                        '<li>If you have an empty selection and no top node is declared the checks will run on the entire scene.</li></ol>'
+                                        '<p>The documentation will refer to the nodes you are running checks on as your "declared nodes", to not be confused with your active selection.'
+                                        '<p>Important! Your current selection will have prioirtiy over the top node defined in the UI. The reason is to be able to quickly debug errror nodes.'
+                                        '<p>'
+                                        '</p>'
+                                        '<b>About</b><p>'    
+                                        'modelChecker v' + version + '<p>'
+                                        'Reliable production ready sanity checker '
+                                        'for Autodesk Maya Sanity check polygon models in Autodesk Maya, '
+                                        'and prepare your digital assets for a smooth sailing through '
+                                        'the production pipeline. <p>'
+                                        'Authors: <ul><li>Jakob Kousholt <li> Niels Peter Kaagaard </ul><p>'
+                                        'Contributors: <ul><li>Alberto GZ </ul><p>'
+                                        'Contact: jakobjk@gmail.com <p>'
+                                        'Website: https://github.com/JakobJK'
+                                        
                                         )
 
 
@@ -1098,7 +1127,7 @@ class modelChecker(QtWidgets.QMainWindow):
                     'will return a list of traingles', # triangles
                     'will return a list of polygons with more than 4 points.', # Ngons
                     'will return any edge that is connected to only one face', # openEdges
-                    'poles_topology', # poles
+                    'poles description', # poles
                     'will return any edges that does not have softened normals.', # hardEdges
                     'returns lamina faces.', # lamina
                     'zeroAreaFaces description.', # zeroAreaFaces
