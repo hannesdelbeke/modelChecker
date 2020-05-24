@@ -1,10 +1,13 @@
-"""modelChecker v.0.1.0
+''' -------------------------- modelChecker --------------------------------
+
     Reliable production ready sanity checker for Autodesk Maya
     Sanity check polygon models in Autodesk Maya, and prepare
     your digital assets for a smooth sailing through the production pipeline.
     Contact: jakobjk@gmail.com
-    https://github.com/JakobJK/modelChecker
-"""
+    Website: https://github.com/JakobJK/modelChecker
+
+    ------------------------------------------------------------------------
+'''
 
 from PySide2 import QtCore, QtWidgets, QtGui
 from shiboken2 import wrapInstance
@@ -23,14 +26,14 @@ import maya.api.OpenMaya as om
 
 
 # GENERAL VARS
-version = "0.1.1"
+version = '0.1.1'
 winWidth = 694
 winHeight = 900
 reportWidth = 200
 
 sceneFullPath = cmds.file(q=True, sn=True)
 sceneName = os.path.basename(sceneFullPath)
-scenePath = os.path.dirname(sceneFullPath) + "/"
+scenePath = os.path.dirname(sceneFullPath) + '/'
 username = str(getpass.getuser())
 hostname = str(socket.gethostname())
 homedir = os.environ['HOME']
@@ -48,66 +51,84 @@ pyFilePath = os.path.dirname(os.path.abspath(__file__))
 # def shapeNames_fix():
 
 # NAMING FIXERS
-undefined = "is currently unavailable."
+undefined = 'is currently unavailable.'
 
 def trailingNumbers_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def duplicatedNames_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def shapeNames_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    shapeNames = []
+    fixed = 0
+    for obj in nodes:
+        new = obj.split('|')
+        shape = cmds.listRelatives(obj, shapes = True)
+        if shape is not None:
+            name = new[-1] + 'Shape'
+            if not shape[0] == name:
+                cmds.rename(obj, obj+'__tmp__')
+                cmds.rename(obj+'__tmp__', obj)
+                cmds.select(d=True)
+                fixed = 1
+    if fixed == 1:       
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Renamed shape names! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Not renamed shape names <font color=#9c4f4f> [ FAILED ] <br>')
+
 
 def namespaces_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 
 # TOPOLOGY FIXERS
 def triangles_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def ngons_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def openEdges_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def poles_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def hardEdges_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def lamina_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def zeroAreaFaces_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def zeroLengthEdges_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def noneManifoldEdges_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def starlike_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 
 # UV FIXERS
 
 def selfPenetratingUVs_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def missingUVs_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def uvRange_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def crossBorder_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 
 # GENERAL FIXERS
@@ -122,7 +143,7 @@ def layers_fix(self, nodes, func_name, func_name_fix):
         cmds.delete(layer) 
 
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Deleted all display layers! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Deleted all display layers! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
 
@@ -135,12 +156,12 @@ def history_fix(self, nodes, func_name, func_name_fix):
     cmds.select(d=True)
 
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Deleted construction history! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Deleted construction history! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
 
 def shaders_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 
 def unfrozenTransforms_fix(self, nodes, func_name, func_name_fix):
@@ -152,7 +173,7 @@ def unfrozenTransforms_fix(self, nodes, func_name, func_name_fix):
     cmds.select(d=True)
 
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Freeze transformations done! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Freeze transformations done! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
 
@@ -165,12 +186,12 @@ def uncenteredPivots_fix(self, nodes, func_name, func_name_fix):
     cmds.select(d=True)
     
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Pivot reseted to 0,0,0! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Pivot reseted to 0,0,0! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
     
 def parentGeometry_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml("<br> <font color=#c99936>" + func_name_fix + "</font> " + undefined + "<br>")
+    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def emptyGroups_fix(self, nodes, func_name, func_name_fix):
     emptyGroups = []
@@ -180,7 +201,7 @@ def emptyGroups_fix(self, nodes, func_name, func_name_fix):
             cmds.delete(obj)
     
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Deleted all empty groups in scene! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Deleted all empty groups in scene! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
 
@@ -208,12 +229,12 @@ def selectionSets_fix(self, nodes, func_name, func_name_fix):
     cmds.delete(userSets)
 
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Deleted all userSets in scene! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Deleted all userSets in scene! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
 
 def nodesInTabs_fix(self, nodes, func_name, func_name_fix):
-    panels = cmds.getPanel(sty="nodeEditorPanel")
+    panels = cmds.getPanel(sty='nodeEditorPanel')
 
     for mypanel in panels:
         #Open window
@@ -230,13 +251,13 @@ def nodesInTabs_fix(self, nodes, func_name, func_name_fix):
 
     cmds.refresh()
     #Output message and restore state buttons
-    self.reportOutputUI.insertHtml("<br> Cleaned all nodes in Node Editor! <font color='#3da94d'> [ SUCCESS ] <br>" )
+    self.reportOutputUI.insertHtml('<br> Cleaned all nodes in Node Editor! <font color=#3da94d> [ SUCCESS ] <br>' )
     restoreStateButtons(self, func_name)
 
 
 #Function for restoring state buttons after fix
 def restoreStateButtons(self, func_name):
-    self.commandLabel[func_name].setStyleSheet("background-color: none;")
+    self.commandLabel[func_name].setStyleSheet('background-color: none;')
     self.errorNodesButton[func_name].setEnabled(False)
     self.commandFixButton[func_name].setEnabled(False)
 
@@ -276,7 +297,7 @@ def shapeNames(self, list):
         new = obj.split('|')
         shape = cmds.listRelatives(obj, shapes = True)
         if shape is not None:
-            name = new[-1] + "Shape"
+            name = new[-1] + 'Shape'
             if not shape[0] == name:
                 shapeNames.append(obj)
     return shapeNames
@@ -568,7 +589,7 @@ def shaders(self, list):
         shape = cmds.listRelatives(obj, shapes = True, fullPath = True)
         if cmds.nodeType(shape) == 'mesh':
             if shape is not None:
-                shadingGrps = cmds.listConnections(shape, type='shadingEngine');
+                shadingGrps = cmds.listConnections(shape, type='shadingEngine')
             if not shadingGrps[0] == 'initialShadingGroup':
                 shaders.append(obj)
     return shaders
@@ -666,8 +687,8 @@ class modelChecker(QtWidgets.QMainWindow):
         super(modelChecker, self).__init__(parent, QtCore.Qt.WindowStaysOnTopHint)
 
         # Creates object, Title Name and Adds a QtWidget as our central widget/Main Layout
-        self.setObjectName("modelCheckerUI")
-        self.setWindowTitle("Model Checker" + ' ' + 'v' + version)
+        self.setObjectName('modelCheckerUI')
+        self.setWindowTitle('Model Checker' + ' ' + 'v' + version)
         mainLayout = QtWidgets.QWidget(self)
         self.setCentralWidget(mainLayout)
 
@@ -687,13 +708,13 @@ class modelChecker(QtWidgets.QMainWindow):
         selectedModelVLayout = QtWidgets.QHBoxLayout()
         self.checks.addLayout(selectedModelVLayout)
 
-        selectedModelLabel = QtWidgets.QLabel("Top Node")
+        selectedModelLabel = QtWidgets.QLabel('Top Node')
         selectedModelLabel.setFixedWidth(60)
 
-        self.selectedTopNode_UI = QtWidgets.QLineEdit("")
+        self.selectedTopNode_UI = QtWidgets.QLineEdit('')
         self.selectedTopNode_UI.setMinimumWidth(270)
 
-        self.selectedModelNodeButton = QtWidgets.QPushButton("Select")
+        self.selectedModelNodeButton = QtWidgets.QPushButton('Select')
         self.selectedModelNodeButton.setFixedWidth(65)
         self.selectedModelNodeButton.clicked.connect(self.setTopNode)
 
@@ -721,14 +742,14 @@ class modelChecker(QtWidgets.QMainWindow):
         self.aboutButton.setIconSize(QtCore.QSize(32,32))
         self.aboutButton.clicked.connect(partial(self.aboutText))
 
-        reportLabel = QtWidgets.QLabel("Report:")
+        reportLabel = QtWidgets.QLabel('Report:')
         reportLabel.setMaximumWidth(40)
 
-        self.clearButton = QtWidgets.QPushButton("Clear")
+        self.clearButton = QtWidgets.QPushButton('Clear')
         self.clearButton.setMinimumWidth(60)
         self.clearButton.clicked.connect(partial(self.reportOutputUI.clear))
 
-        self.saveButton = QtWidgets.QPushButton("Save")
+        self.saveButton = QtWidgets.QPushButton('Save')
         self.saveButton.setMinimumWidth(60)
         self.saveButton.clicked.connect(partial(self.saveReport))
 
@@ -808,7 +829,7 @@ class modelChecker(QtWidgets.QMainWindow):
             self.categoryCollapse[obj] = QtWidgets.QPushButton(u'\u2193'.encode('utf-8'))
             self.categoryCollapse[obj].clicked.connect(partial(self.toggleUI, obj))
             self.categoryCollapse[obj].setMaximumWidth(30)
-            self.categoryButton[obj].setStyleSheet("background-color: #777; text-transform: uppercase; color: #CCC; font-size: 11px;")
+            self.categoryButton[obj].setStyleSheet('background-color: #777; text-transform: uppercase; color: #CCC; font-size: 11px;')
             self.categoryButton[obj].clicked.connect(partial(self.checkCategory, obj))
             self.categoryHeader[obj].addWidget(self.categoryButton[obj])
             self.categoryHeader[obj].addWidget(self.categoryCollapse[obj])
@@ -833,12 +854,12 @@ class modelChecker(QtWidgets.QMainWindow):
 
             self.commandLayout[name].setSpacing(4)
             self.commandLayout[name].setContentsMargins(0,0,0,0)
-            self.commandWidget[name].setStyleSheet("padding: 0px; margin: 0px;")
+            self.commandWidget[name].setStyleSheet('padding: 0px; margin: 0px;')
             
             self.command[name] = name
             
             self.commandInfo[name] = QtWidgets.QPushButton(u'\u24d8')
-            self.commandInfo[name].setStyleSheet("color: #222;")
+            self.commandInfo[name].setStyleSheet('color: #222;')
             self.commandInfo[name].setFixedWidth(18)
             self.commandInfo[name].setFlat(True)
             self.commandInfo[name].clicked.connect(partial(self.getInfo, [eval(name)] ))
@@ -850,15 +871,15 @@ class modelChecker(QtWidgets.QMainWindow):
             self.commandCheckBox[name].setChecked(check)
             self.commandCheckBox[name].setMaximumWidth(20)
 
-            self.commandRunButton[name] = QtWidgets.QPushButton("Run")
+            self.commandRunButton[name] = QtWidgets.QPushButton('Run')
             self.commandRunButton[name].setFixedWidth(40)
             self.commandRunButton[name].clicked.connect(partial(self.commandToRun, [eval(name)]))
 
-            self.errorNodesButton[name] = QtWidgets.QPushButton("Select Error Nodes")
+            self.errorNodesButton[name] = QtWidgets.QPushButton('Select Error Nodes')
             self.errorNodesButton[name].setEnabled(False)
             self.errorNodesButton[name].setFixedWidth(110)
 
-            self.commandFixButton[name] = QtWidgets.QPushButton("Fix")
+            self.commandFixButton[name] = QtWidgets.QPushButton('Fix')
             self.commandFixButton[name].setEnabled(False)
             self.commandFixButton[name].setFixedWidth(30)
            
@@ -877,27 +898,27 @@ class modelChecker(QtWidgets.QMainWindow):
         self.bottomButtonsLayout = QtWidgets.QHBoxLayout()
         self.checks.addLayout(self.bottomButtonsLayout)
 
-        self.restoreButton = QtWidgets.QPushButton("Reset UI")
+        self.restoreButton = QtWidgets.QPushButton('Reset UI')
         self.restoreButton.setMaximumWidth(60)
         self.restoreButton.clicked.connect(self.restoreState)
         
-        checkLabel = QtWidgets.QLabel("Check:")
+        checkLabel = QtWidgets.QLabel('Check:')
 
-        self.checkAllButton = QtWidgets.QPushButton("All")
+        self.checkAllButton = QtWidgets.QPushButton('All')
         self.checkAllButton.setFixedWidth(45)
         self.checkAllButton.clicked.connect(self.checkAll)
 
-        self.uncheckAllButton = QtWidgets.QPushButton("None")
+        self.uncheckAllButton = QtWidgets.QPushButton('None')
         self.uncheckAllButton.setFixedWidth(45)
         self.uncheckAllButton.clicked.connect(self.uncheckAll)
 
-        self.invertCheckButton = QtWidgets.QPushButton("Invert")
+        self.invertCheckButton = QtWidgets.QPushButton('Invert')
         self.invertCheckButton.setFixedWidth(45)
         self.invertCheckButton.clicked.connect(self.invertCheck)
         
-        self.checkRunButton = QtWidgets.QPushButton("Run All Checked")
+        self.checkRunButton = QtWidgets.QPushButton('Run All Checked')
         #self.checkRunButton.setFixedWidth(204)
-        self.checkRunButton.setStyleSheet("background-color: #58636b;")
+        self.checkRunButton.setStyleSheet('background-color: #58636b;')
         self.checkRunButton.clicked.connect(self.sanityCheck)
         
         self.checkButtonsLayout.addWidget(checkLabel)
@@ -967,7 +988,7 @@ class modelChecker(QtWidgets.QMainWindow):
         for obj in self.list:
             new = obj.split('_')
             name = new[0]
-            self.commandLabel[name].setStyleSheet("background-color: none;")
+            self.commandLabel[name].setStyleSheet('background-color: none;')
             self.errorNodesButton[name].setEnabled(False)
             self.commandFixButton[name].setEnabled(False)        
         self.reportOutputUI.clear()
@@ -995,8 +1016,7 @@ class modelChecker(QtWidgets.QMainWindow):
                                         'Authors: <ul><li>Jakob Kousholt <li> Niels Peter Kaagaard </ul><p>'
                                         'Contributors: <ul><li>Alberto GZ </ul><p>'
                                         'Contact: jakobjk@gmail.com <p>'
-                                        'Website: https://github.com/JakobJK'
-                                        
+                                        'Website: https://github.com/JakobJK'                                        
                                         )
 
 
@@ -1036,20 +1056,20 @@ class modelChecker(QtWidgets.QMainWindow):
         topNode = self.selectedTopNode_UI.text()
         if len(selection) > 0:
             nodes = selection
-        elif self.selectedTopNode_UI.text() == "":
+        elif self.selectedTopNode_UI.text() == '':
             nodes = allUsuableNodes
         else:
             if cmds.objExists(topNode):
-                nodes = cmds.listRelatives(topNode, allDescendents = True, typ="transform")
+                nodes = cmds.listRelatives(topNode, allDescendents = True, typ='transform')
                 if not nodes:
                     nodes = topNode
                 nodes.append(topNode)
             else:
-                response = "Object in Top Node doesn't exists. <font color='#9c4f4f'> [ FAILED ] <br>"
+                response = 'Object in Top Node doesn`t exists. <font color=#9c4f4f> [ FAILED ] <br>'
                 self.reportOutputUI.clear()
                 self.reportOutputUI.insertHtml(response)
         for node in nodes:
-            shapes = cmds.listRelatives(node, shapes=True, typ="mesh")
+            shapes = cmds.listRelatives(node, shapes=True, typ='mesh')
             if shapes:
                 self.SLMesh.add(node)
         return nodes
@@ -1061,17 +1081,17 @@ class modelChecker(QtWidgets.QMainWindow):
         nodes = self.filterNodes()
         self.reportOutputUI.clear()
         if len(nodes) == 0:
-            self.reportOutputUI.insertHtml("No nodes to check. <font color='#9c4f4f'> [ FAILED ] <br>")
+            self.reportOutputUI.insertHtml('No nodes to check. <font color=#9c4f4f> [ FAILED ] <br>')
         else:
-            if sceneName != "":
-                self.reportOutputUI.insertHtml("Scene: " + sceneName + "<br>")
+            if sceneName != '':
+                self.reportOutputUI.insertHtml('Scene: ' + sceneName + '<br>')
             else:
-                self.reportOutputUI.insertHtml("Scene: " + "Untitled" + "<br>")
+                self.reportOutputUI.insertHtml('Scene: ' + 'Untitled' + '<br>')
             
-            self.reportOutputUI.insertHtml("Date: " + cdate + "<br>")
-            self.reportOutputUI.insertHtml("User: " + username + "<br>")
-            self.reportOutputUI.insertHtml("Computer: " + hostname + "<br>")
-            self.reportOutputUI.insertHtml("____________________________<br>")
+            self.reportOutputUI.insertHtml('Date: ' + cdate + '<br>')
+            self.reportOutputUI.insertHtml('User: ' + username + '<br>')
+            self.reportOutputUI.insertHtml('Computer: ' + hostname + '<br>')
+            self.reportOutputUI.insertHtml('____________________________<br>')
             
             for command in commands:
                 # For Each node in filterNodes, run command.
@@ -1079,22 +1099,22 @@ class modelChecker(QtWidgets.QMainWindow):
                 self.func_name_fix = ''
                 # Return error nodes
                 if self.errorNodes:
-                    self.reportOutputUI.insertHtml("<br>&#10752; " + command.func_name + "<font color='#9c4f4f'> [ FAILED ] <br>" )
+                    self.reportOutputUI.insertHtml('<br>&#10752; ' + command.func_name + '<font color=#9c4f4f> [ FAILED ] <br>' )
                     for obj in self.errorNodes:
-                        self.reportOutputUI.insertHtml("&#9492;&#9472; " + obj + "<br>")
+                        self.reportOutputUI.insertHtml('&#9492;&#9472; ' + obj + '<br>')
 
                     self.errorNodesButton[command.func_name].setEnabled(True)
                     self.errorNodesButton[command.func_name].clicked.connect(partial(self.selectErrorNodes, self.errorNodes))
-                    self.commandLabel[command.func_name].setStyleSheet("background-color: #664444;")
+                    self.commandLabel[command.func_name].setStyleSheet('background-color: #664444;')
 
                     #Activate FIX button and call to function
                     self.commandFixButton[command.func_name].setEnabled(True)
                     self.commandFixButton[command.func_name].clicked.connect(partial(self.runFix, self.errorNodes, command.func_name, self.func_name_fix ))
 
                 else:
-                    self.reportOutputUI.insertHtml("<br> " + command.func_name + "<font color='#64a65a'> [ SUCCESS ] <br>" )
+                    self.reportOutputUI.insertHtml('<br> ' + command.func_name + '<font color=#64a65a> [ SUCCESS ] <br>' )
                     self.errorNodesButton[command.func_name].setEnabled(False)
-                    self.commandLabel[command.func_name].setStyleSheet("background-color: #446644;")
+                    self.commandLabel[command.func_name].setStyleSheet('background-color: #446644;')
 
                     #Deactivate FIX button
                     self.commandFixButton[command.func_name].setEnabled(False)
@@ -1145,7 +1165,7 @@ class modelChecker(QtWidgets.QMainWindow):
         
         for command in commands:
             self.reportOutputUI.clear()
-            self.reportOutputUI.insertHtml("<br><font color=#c99936>" + command.func_name + "</font> " + dc[command.func_name] + "<p>" )
+            self.reportOutputUI.insertHtml('<br><font color=#c99936>' + command.func_name + '</font> ' + dc[command.func_name] + '<p>' )
 
         
     # Write the report to report UI.
@@ -1158,9 +1178,9 @@ class modelChecker(QtWidgets.QMainWindow):
             if self.commandCheckBox[name].isChecked():
                 checkedCommands.append(eval(name))
             else:
-                self.commandLabel[name].setStyleSheet("background-color: none;")
+                self.commandLabel[name].setStyleSheet('background-color: none;')
         if len(checkedCommands) == 0:
-            print("You have to select something")
+            print('You have to select something')
         else:
             self.commandToRun(checkedCommands)
 
@@ -1172,20 +1192,24 @@ class modelChecker(QtWidgets.QMainWindow):
         path = scenePath
         reportFile = path + sceneName + '_' + cdate + '.txt'
 
-        file = codecs.open(reportFile, "w", "utf-8")
-        file.write(text)
-        file.close()
+        if sceneName != '':
+            file = codecs.open(reportFile, 'w', 'utf-8')
+            file.write(text)
+            file.close()
+            self.reportOutputUI.insertHtml('<p>____________________________<p>')
+            self.reportOutputUI.insertHtml('Report saved! <font color=#3da94d> [ SUCCESS ] </font><br>' + reportFile) 
+        else:
+            self.reportOutputUI.insertHtml('Save report <font color=#9c4f4f> [ FAILED ] </font><br> You have to save scene before!')
+            
 
-        self.reportOutputUI.insertHtml("<br>____________________________<br>")
-        self.reportOutputUI.insertHtml("<font color:#ffffff> Report saved! <br>" + reportFile) 
 
 
     def selectErrorNodes(self, list):
         cmds.select(list)
         '''
-        self.reportOutputUI.insertPlainText("selected affected items: \n")
+        self.reportOutputUI.insertPlainText('selected affected items: \n')
         for i in list:
-            self.reportOutputUI.insertPlainText(i + "\n")
+            self.reportOutputUI.insertPlainText(i + '\n')
         '''
 
 
