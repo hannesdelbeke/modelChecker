@@ -39,150 +39,139 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 ## Naming
 
 <details>
-<summary>duplicatedNames</summary>
-<p>
-  Returns any node within the hierachy that is not uniquely named
-</p>
+    <summary>trailingNumbers</summary>
+        <p>No description</p>
 </details>
 
 <details>
-<summary>shapeNames</summary>
-<p>
-  Returns shape nodes which does not follow the naming convention of transformNode+"Shape"</p>
-  </details>
+    <summary>duplicatedNames</summary>
+        <p>Returns any node within the hierachy that is not uniquely named</p>
+</details>
 
 <details>
-<summary>namespaces</summary>
-<p>
-  Returns nodes that are not in the global name space</p>
-  </details>
+    <summary>shapeNames</summary>
+        <p>Returns shape nodes which does not follow the naming convention of transformNode+"Shape"</p>
+</details>
+
+<details>
+    <summary>namespaces</summary>
+        <p>Returns nodes that are not in the global name space</p>
+</details>
 
 ## Topology
 
 <details>
-<summary>triangles</summary>
+    <summary>triangles</summary>
+        <p>Will return a list of traingles</p>
+</details>
 
-<p>Will return a list of traingles</p>
-</details>
 <details>
-<summary>ngons</summary>
-<p>
-Will return a list of Ngons
-</p>
+    <summary>ngons</summary>
+        <p>Will return a list of Ngons</p>
 </details>
+
 <details>
-<summary>openEdges</summary>
-<p>
-Will return any Edge that is connected to onyl one face
-</p>
+    <summary>openEdges</summary>
+        <p>Will return any Edge that is connected to onyl one face</p>
 </details>
+
 <details>
-<summary>hardEdges</summary>
-<p>
-Will return any edges that does not have softened normals
-</p>
+    <summary>hardEdges</summary>
+        <p>Will return any edges that does not have softened normals</p>
 </details>
+
 <details>
-<summary>lamina</summary>
-<p>
-  Returns lamina faces
-</p>
+    <summary>lamina</summary>
+        <p>Returns lamina faces</p>
 </details>
+
 <details>
-  <summary>zeroAreaFaces</summary>
-  <p>
-    Returns
-  </p>
+    <summary>zeroAreaFaces</summary>
+        <p>No description</p>
 </details>
+
 <details>
-<summary>zeroLengthEdges</summary>
-<p>
-Returns edges which has a length less than 0.000001 units
-</p>
+    <summary>zeroLengthEdges</summary>
+        <p>Returns edges which has a length less than 0.000001 units</p>
 </details>
+
 <details>
-<summary>noneManifoldEdges</summary>
+    <summary>noneManifoldEdges</summary>
+        <p>No description</p>
 </details>
+
 <details>
-<summary>starlike</summary>
+    <summary>starlike</summary>
+                <p>No description</p>
 </details>
 
 ## UVs
 
 <details>
-<summary>selfPenetratingUVs</summary>
+    <summary>selfPenetratingUVs</summary>
+        <p>No description</p>
 </details>
+
 <details>
-<summary>missingUVs</summary>
-<p>
-Returns any polygon object that does have UVs
-</p>
+    <summary>missingUVs</summary>
+        <p>Returns any polygon object that does have UVs</p>
 </details>
+
 <details>
-<summary>uvRange</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>uvRange</summary>
+        <p>No description</p>
 </details>
+
 <details>
-<summary>crossBorder</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>crossBorder</summary>
+        <p>No description</p>
 </details>
 
 ## General
 
 <details>
-<summary>layers </summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>layers </summary>
+        <p>Checks if exists display layers</p>
 </details>
+
 <details>
-<summary>history</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>history</summary>
+        <p>Returns any object it have construction history.</p>
 </details>
+
 <details>
-<summary>shaders</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>shaders</summary>
+        <p>No description</p>
 </details>
+
 <details>
-<summary>unfrozenTransforms</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>unfrozenTransforms</summary>
+        <p>Returns any object with values for translate and rotate different to 0,0,0 and for scale different to 1,1,1</p>
 </details>
+
 <details>
-<summary>uncenteredPivots</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>uncenteredPivots</summary>
+            <p>returns any object with pivot values different to world origin (0,0,0). Fix sets to 0,0,0 all pivots.</p>
 </details>
+
 <details>
-<summary>parentGeometry</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>parentGeometry</summary>
+        <p>No description</p>
 </details>
+
 <details>
-<summary>emptyGroups</summary>
-    + markdown list 1
-        + nested list 1
-        + nested list 2
-    + markdown list 2
+    <summary>emptyGroups</summary>
+        <p>Return any exsting empty group. Fix will remove all empty groups</p>
+</details>
+
+<details>
+    <summary>selectionSets</summary>
+        <p>Checks if exists user selection sets. Fix will remove all user selection sets.</p>
+</details>
+
+<details>
+    <summary>nodesInTabs</summary>
+        <p>Returns any object with nodes loaded in Node Editor, that produces MayaNodesInTabs output node. Fix will close all tabs in Node Editor</p>
 </details>
 
 ## Authors
