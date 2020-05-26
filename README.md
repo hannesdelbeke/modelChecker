@@ -41,7 +41,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 <details>
     <summary>trailingNumbers</summary>
         <p>Returns any node with name ends in any number from 0 to 9.</p>
-        ![trailingNumbers](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_trainlingNumbers.png)
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_trainlingNumbers.png">
 </details>
 
 <details>
@@ -67,7 +67,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 <details>
     <summary>triangles</summary>
         <p>Will return a list of traingles</p>
-        ![triangles](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_triangles.png)
+        <p>![triangles](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_triangles.png)</p>
 </details>
 
 <details>
