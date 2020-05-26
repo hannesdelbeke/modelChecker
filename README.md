@@ -41,7 +41,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 <details>
     <summary>trailingNumbers</summary>
         <p>Returns any node with name ends in any number from 0 to 9.</p>
-        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_trainlingNumbers.png">
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_trailingNumbers.png">
 </details>
 
 <details>
@@ -52,14 +52,14 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 <details>
     <summary>shapeNames</summary>
         <p>Returns shape nodes which does not follow the naming convention of transformNode+"Shape"</p>
-        ![shapeNames](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_shapeNames.png)
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_shapeNames.png">
 
 </details>
 
 <details>
     <summary>namespaces</summary>
         <p>Returns nodes that are not in the global name space</p>
-        ![namespaces](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_namespaces.png)
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_namespaces.png">
 </details>
 
 ## Topology
@@ -67,25 +67,25 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 <details>
     <summary>triangles</summary>
         <p>Will return a list of traingles</p>
-        <p>![triangles](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_triangles.png)</p>
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_triangles.png">
 </details>
 
 <details>
     <summary>ngons</summary>
         <p>Will return a list of Ngons</p>
-        ![ngons](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_ngons.png)
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_ngons.png">
 </details>
 
 <details>
     <summary>openEdges</summary>
         <p>Will return any Edge that is connected to onyl one face</p>
-        ![openEdges](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_openEdges.png)
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_openEdges.png">
 </details>
 
 <details>
     <summary>hardEdges</summary>
         <p>Will return any edges that does not have softened normals</p>
-        ![hardEdges](https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_hardEdges.png)
+        <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_hardEdges.png">
 </details>
 
 <details>
