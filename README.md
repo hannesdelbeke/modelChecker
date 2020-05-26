@@ -40,7 +40,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 
 <details>
     <summary>trailingNumbers</summary>
-        <p>No description</p>
+        <p>Returns any node with name ends in any number from 0 to 9.</p>
 </details>
 
 <details>
