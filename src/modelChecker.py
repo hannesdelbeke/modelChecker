@@ -26,7 +26,7 @@ import maya.api.OpenMaya as om
 
 
 # GENERAL VARS
-version = '0.1.1'
+version = '0.1.2'
 winWidth = 694
 winHeight = 900
 reportWidth = 200
@@ -60,8 +60,8 @@ def duplicatedNames_fix(self, nodes, func_name, func_name_fix):
     self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def shapeNames_fix(self, nodes, func_name, func_name_fix):
-    shapeNames = []
     fixed = 0
+    shapeNames = []
     for obj in nodes:
         new = obj.split('|')
         shape = cmds.listRelatives(obj, shapes = True)
@@ -72,6 +72,7 @@ def shapeNames_fix(self, nodes, func_name, func_name_fix):
                 cmds.rename(obj+'__tmp__', obj)
                 cmds.select(d=True)
                 fixed = 1
+    
     if fixed == 1:       
         #Output message and restore state buttons
         self.reportOutputUI.insertHtml('<br> Renamed shape names! <font color=#3da94d> [ SUCCESS ] <br>' )
@@ -81,8 +82,23 @@ def shapeNames_fix(self, nodes, func_name, func_name_fix):
 
 
 def namespaces_fix(self, nodes, func_name, func_name_fix):
-    self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
+    fixed = 0
+    namespaces = []
+    for obj in nodes:
+        new = obj.split(':')
+        namespace = new[0]
+        cmds.rename(obj, new[1])
+        fixed = 1
 
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Removed namespaces! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Not removed namespaces <font color=#9c4f4f> [ FAILED ] <br>')
+
+
+    
 
 # TOPOLOGY FIXERS
 def triangles_fix(self, nodes, func_name, func_name_fix):
@@ -134,30 +150,40 @@ def crossBorder_fix(self, nodes, func_name, func_name_fix):
 # GENERAL FIXERS
 
 def layers_fix(self, nodes, func_name, func_name_fix):
+    fixed = 0
     defaultLayer = ['defaultLayer']
     userLayers = []
     userLayers = cmds.ls(type = 'displayLayer')
     # Get only user layers
     dispLayers = set(userLayers).difference(set(defaultLayer))   
     for layer in dispLayers:
-        cmds.delete(layer) 
+        cmds.delete(layer)
+        fixed = 1
 
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Deleted all display layers! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Deleted all display layers! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error removing display layers <font color=#9c4f4f> [ FAILED ] <br>')
 
 
 def history_fix(self, nodes, func_name, func_name_fix):
+    fixed = 0
     cmds.select(nodes)
     for obj in nodes:
-       # Delete history in selected items 
-       cmds.delete(obj, ch=True) 
+        # Delete history in selected items 
+        cmds.delete(obj, ch=True) 
+        fixed = 1
     # Deselect all
     cmds.select(d=True)
 
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Deleted construction history! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Deleted construction history! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error removing history <font color=#9c4f4f> [ FAILED ] <br>')
 
 
 def shaders_fix(self, nodes, func_name, func_name_fix):
@@ -165,75 +191,79 @@ def shaders_fix(self, nodes, func_name, func_name_fix):
 
 
 def unfrozenTransforms_fix(self, nodes, func_name, func_name_fix):
+    fixed = 0
     cmds.select(nodes)
     for obj in nodes:
         #Freeze all transformations
         cmds.makeIdentity(obj, apply=True, t=True, r=True, s=True, n=False)
+        fixed = 1
     # Deselect all
     cmds.select(d=True)
-
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Freeze transformations done! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
+    
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Freeze transformations done! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error freezing transforms <font color=#9c4f4f> [ FAILED ] <br>')
 
 
 def uncenteredPivots_fix(self, nodes, func_name, func_name_fix):
+    fixed = 0
     cmds.select(nodes)
     for obj in nodes:
         #Set pivot to world origin (0,0,0)
         cmds.xform(obj, a=True, piv=[0,0,0])
+        fixed = 1
     # Deselect all
     cmds.select(d=True)
     
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Pivot reseted to 0,0,0! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Pivots reseted to 0,0,0! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error reseting pivots <font color=#9c4f4f> [ FAILED ] <br>')
 
     
 def parentGeometry_fix(self, nodes, func_name, func_name_fix):
     self.reportOutputUI.insertHtml('<br> <font color=#c99936>' + func_name_fix + '</font> ' + undefined + '<br>')
 
 def emptyGroups_fix(self, nodes, func_name, func_name_fix):
+    fixed = 0
     emptyGroups = []
     for obj in nodes:
         children = cmds.listRelatives(obj, ad = True)
         if children is None:
             cmds.delete(obj)
+            fixed = 1
     
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Deleted all empty groups in scene! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Deleted all empty groups in scene! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error removing empty groups <font color=#9c4f4f> [ FAILED ] <br>')
 
 
 def selectionSets_fix(self, nodes, func_name, func_name_fix):
-    #Create list getting all sets in scene
-    allSets = cmds.listSets( allSets=True )
+    fixed = 0
+    selectionSets = nodes
+    for sel in selectionSets:
+        #Remove user sets
+        cmds.delete(sel)
+        fixed = 1
+        
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Deleted all userSets in scene! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error removing user selection sets <font color=#9c4f4f> [ FAILED ] <br>')
     
-    #Create list with all default sets
-    defaultSets = [ 'defaultLastHiddenSet',
-                    'defaultHideFaceDataSet', 
-                    'defaultCreaseDataSet'
-                    'defaultObjectSet',
-                    'defaultLightSet',
-                    'internal_standInSE',
-                    'internal_soloSE',
-                    'initialParticleSE',
-                    'initialShadingGroup',
-                    'defaultObjectSet',
-                    'defaultCreaseDataSet'
-                    ]
-    #Get user sets from difference between both lists
-    userSets = set(allSets).difference(set(defaultSets))
-
-    #Remove user sets
-    cmds.delete(userSets)
-
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Deleted all userSets in scene! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
-
 
 def nodesInTabs_fix(self, nodes, func_name, func_name_fix):
+    fixed = 0
     panels = cmds.getPanel(sty='nodeEditorPanel')
 
     for mypanel in panels:
@@ -248,11 +278,15 @@ def nodesInTabs_fix(self, nodes, func_name, func_name_fix):
         #Close window
         control = cmds.control(ned, query=True, fullPathName=True)
         cmds.deleteUI(control.split('|')[0], window=True)
-
+        fixed = 1
     cmds.refresh()
-    #Output message and restore state buttons
-    self.reportOutputUI.insertHtml('<br> Cleaned all nodes in Node Editor! <font color=#3da94d> [ SUCCESS ] <br>' )
-    restoreStateButtons(self, func_name)
+    
+    if fixed == 1:
+        #Output message and restore state buttons
+        self.reportOutputUI.insertHtml('<br> Cleaned all nodes in Node Editor! <font color=#3da94d> [ SUCCESS ] <br>' )
+        restoreStateButtons(self, func_name)
+    else:
+        self.reportOutputUI.insertHtml('Error cleaning nodes in Node Editor <font color=#9c4f4f> [ FAILED ] <br>')
 
 
 #Function for restoring state buttons after fix
@@ -637,22 +671,39 @@ def emptyGroups(self, list):
     return emptyGroups
 
 def selectionSets(self, list):
+    # Create list getting all sets in scene
     allSets = cmds.listSets( allSets=True )
-    defaultSets = [ 'defaultLastHiddenSet',
-                    'defaultHideFaceDataSet', 
-                    'defaultCreaseDataSet'
-                    'defaultObjectSet',
-                    'defaultLightSet',
-                    'internal_standInSE',
-                    'internal_soloSE',
-                    'initialParticleSE',
-                    'initialShadingGroup',
-                    'defaultObjectSet',
-                    'defaultCreaseDataSet'
-                ]
-    userSets = set(allSets).difference(set(defaultSets))    
-    selectionSets = userSets
-    return selectionSets
+
+    # Create list with all isolation sets
+    isolationSets = []
+    for n in range(10):
+        isolationSets.append('modelPanel' + str(n) + 'ViewSelectedSet')
+    
+    # Check if any isolation set exists 
+    result = any(elem in allSets for elem in isolationSets)
+
+    if result:
+        self.reportOutputUI.insertHtml('<br>You must exit of isolated mode for any object <font color=#9c4f4f> [ FAILED ] <br>')
+        return selectionSets
+    else:
+        # Create list with all default sets
+        defaultSets = [ 'defaultLastHiddenSet',
+                        'defaultHideFaceDataSet', 
+                        'defaultCreaseDataSet'
+                        'defaultObjectSet',
+                        'defaultLightSet',
+                        'internal_standInSE',
+                        'internal_soloSE',
+                        'initialParticleSE',
+                        'initialShadingGroup',
+                        'defaultObjectSet',
+                        'defaultCreaseDataSet'
+                    ]
+        # Get user sets from difference between both lists
+        userSets = set(allSets).difference(set(defaultSets)) 
+        
+        selectionSets = userSets
+        return selectionSets
 
 
 def nodesInTabs(self, list):
