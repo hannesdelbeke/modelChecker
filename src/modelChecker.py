@@ -37,7 +37,7 @@ scenePath = os.path.dirname(sceneFullPath) + '/'
 username = str(getpass.getuser())
 hostname = str(socket.gethostname())
 homedir = os.environ['HOME']
-pyFilePath = os.path.dirname(os.path.abspath(__file__))
+pyFilePath = os.path.dirname(os.path.relpath(__file__))
 
 
 
