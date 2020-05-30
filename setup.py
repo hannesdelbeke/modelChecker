@@ -8,11 +8,12 @@ import shutil
 
 from os import path
 from os import rename
+from os import unlink
 from distutils.dir_util import copy_tree
 from time import sleep
 
 
-homedir = os.environ['HOME']
+homedir = os.path.expanduser('~')
 mayaVersions = ['2016','2017','2018','2019','2020']
 os = sys.platform
 setupFilePath = path.dirname(path.abspath('__file__')) + '/'
@@ -35,7 +36,7 @@ def getOS():
             print('Maya user path not found')
     elif os == 'win32':
         # Windows
-        mayaUserPath = homedir + '/Documents/Autodesk/maya/'
+        mayaUserPath = homedir + '/Documents/maya/'
         if path.exists(mayaUserPath):
             return mayaUserPath
         else:
@@ -81,6 +82,7 @@ def install():
                     file.write(filedata)
 
                 # Restore original name
+                unlink(file1)
                 rename(file3, file1)
 
                 print('Adding modelChecker button to Maya ' + mayaversion + ' custom shelf...')
