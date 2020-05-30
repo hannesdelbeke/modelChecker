@@ -13,6 +13,7 @@ from PySide2 import QtCore, QtWidgets, QtGui
 from shiboken2 import wrapInstance
 from functools import partial
 from datetime import datetime
+from os import path
 
 import sys
 import os
@@ -36,8 +37,8 @@ sceneName = os.path.basename(sceneFullPath)
 scenePath = os.path.dirname(sceneFullPath) + '/'
 username = str(getpass.getuser())
 hostname = str(socket.gethostname())
-homedir = os.environ['HOME']
-pyFilePath = os.path.dirname(os.path.relpath(__file__))
+homedir = os.path.expanduser('~')
+pyFilePath = path.dirname(os.path.abspath('__file__'))
 
 
 
