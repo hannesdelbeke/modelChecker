@@ -1,0 +1,38 @@
+    
+    // modelChecker shelf Button: start
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 39
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "modelChecker" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "modelChecker" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0 
+        -image "modelChecker_icon.png" 
+        -style "iconOnly" 
+        -marginWidth 1
+        -marginHeight 1
+        -command "from modelChecker import modelChecker\nreload (modelChecker)\n\ntry:\n    md_win.close()\nexcept:\n    pass\nmd_win = modelChecker.modelChecker(parent=modelChecker.getMainWindow())\nmd_win.show()\nmd_win.raise_()\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    // modelChecker shelf Button: end
+
+}
