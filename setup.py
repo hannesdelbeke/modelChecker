@@ -57,7 +57,7 @@ def install():
 
                 file1 = mayaShelfPath + 'shelf_Custom.mel'
                 file2 = setupFilePath + 'shelfIcon.mel'
-                file3 = mayaShelfPath + 'shelf_Custom_tmp.mel'
+                file3 = mayaShelfPath + 'shelf_Custom.mel.tmp'
 
                 # Backup shelf_Custom.mel
                 shutil.copy(file1, file1 + '.bak')
