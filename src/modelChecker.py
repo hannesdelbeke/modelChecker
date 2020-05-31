@@ -697,11 +697,17 @@ def selectionSets(self, list):
                         'internal_soloSE',
                         'initialParticleSE',
                         'initialShadingGroup',
+                        'swatchShadingGroup',
                         'defaultObjectSet',
                         'defaultCreaseDataSet'
                     ]
+        # Create lists with sets contains words
+        mat = [s for s in allSets if "mat_" in s]
+        sgr = [s for s in allSets if "sgr_" in s]
+
+        keepSets = defaultSets + mat + sgr                    
         # Get user sets from difference between both lists
-        userSets = set(allSets).difference(set(defaultSets)) 
+        userSets = set(allSets).difference(set(keepSets)) 
         
         selectionSets = userSets
         return selectionSets
