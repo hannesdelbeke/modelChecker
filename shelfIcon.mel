@@ -1,5 +1,5 @@
     
-    // modelChecker shelf Button: start
+    // begins modelChecker config button
     shelfButton
         -enableCommandRepeat 1
         -flexibleWidthType 3
@@ -33,6 +33,6 @@
         -commandRepeatable 1
         -flat 1
     ;
-    // modelChecker shelf Button: end
+    // ends modelChecker config button
 
 }
