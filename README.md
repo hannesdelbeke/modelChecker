@@ -6,7 +6,22 @@ modelChecker is a tool written for Autodesk Maya to sanity check digital polygon
 
 ## Setup
 
-Place the modelChecker.py file in your maya scripts directory and create a python shell button with the following code:
+Download <a href="https://github.com/AlbertoGZ-dev/modelChecker/archive/master.zip">modelChecker.zip</a> and uncompress it.
+
+#### Automatic installation
+
+Run the installer for your plattform.
+
+- Windows by double clicking *install_win.bat* file.
+- MacOS by double clicking *install_mac* file.
+- Linux open shell and execute *install_linux.sh* file.
+
+Note: on MacOS and Linux you may need set execution permissions the installer file. Ex. *chmod +x install_linux.sh*
+
+
+#### Manual installation
+
+Place the *modelChecker.py* file in your Maya scripts directory and create a python shell button with the following code:
 
 ```python
 import modelChecker
@@ -19,6 +34,9 @@ md_win = modelChecker.modelChecker(parent=modelChecker.getMainWindow())
 md_win.show()
 md_win.raise_()
 ```
+
+For the icon, place *modelChecker_icon.png* file in the same folder as *modelChecker.py*
+
 
 ## Usage
 
