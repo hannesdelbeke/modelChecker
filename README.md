@@ -16,7 +16,7 @@ Run the installer for your plattform.
 - MacOS by double clicking *install_mac* file.
 - Linux open shell and execute *install_linux.sh* file.
 
-Note: on MacOS and Linux you may need set execution permissions the installer file. Ex. *chmod +x install_linux.sh*
+Note: on MacOS and Linux you may need to set execution permissions the installer file. Ex. *chmod +x install_linux.sh*
 
 
 #### Manual installation
@@ -128,7 +128,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 
 <details>
     <summary>starlike</summary>
-                <p>No description</p>
+        <p>No description</p>
 </details>
 
 ## UVs
@@ -140,7 +140,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
 
 <details>
     <summary>missingUVs</summary>
-        <p>Returns any polygon object that does have UVs</p>
+        <p>Returns any polygon object that not have UVs</p>
 </details>
 
 <details>
