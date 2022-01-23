@@ -45,7 +45,7 @@ Important! Your current selection will have prioirtiy over the top node defined 
 
 Here is an extensive lists of all of the checks the modelChecker can make on your 3d models. Passing all checks does not inherently make for a good model. Understand what is required for your production will.
 
-## Naming
+### Naming
 
 <details>
     <summary>trailingNumbers</summary>
@@ -71,7 +71,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
         <img src="https://github.com/AlbertoGZ-dev/modelChecker/blob/master/website/img/modelChecker_namespaces.png">
 </details>
 
-## Topology
+### Topology
 
 <details>
     <summary>triangles</summary>
@@ -122,7 +122,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
         <p>No description</p>
 </details>
 
-## UVs
+### UVs
 
 <details>
     <summary>selfPenetratingUVs</summary>
@@ -144,7 +144,7 @@ Here is an extensive lists of all of the checks the modelChecker can make on you
         <p>No description</p>
 </details>
 
-## General
+### General
 
 <details>
     <summary>layers </summary>
