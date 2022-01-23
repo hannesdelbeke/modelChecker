@@ -2,7 +2,7 @@
 
 modelChecker is a python plug-in written for Autodesk Maya to sanity check digital polygon models. It is unopinionated, provides concise reporting, and lets you select your error nodes easily.
 
-![modelChecker](./modelChecker.png)
+![modelChecker](./website/img/modelChecker.png)
 
 ## Setup
 
