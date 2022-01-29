@@ -127,7 +127,7 @@ def lamina(list, SLMesh):
     return lamina
 
 
-def zeroAreaFaces(list, SLMesh):
+def zeroAreaFaces(list, SLMesh, treshold=0.00000001):
     zeroAreaFaces = []
     selIt = om.MItSelectionList(SLMesh)
     while not selIt.isDone():
@@ -135,7 +135,7 @@ def zeroAreaFaces(list, SLMesh):
         objectName = selIt.getDagPath().getPath()
         while not faceIt.isDone():
             faceArea = faceIt.getArea()
-            if faceArea == 0.00000001:
+            if faceArea == treshold:
                 faceIndex = faceIt.index()
                 componentName = str(objectName) + '.f[' + str(faceIndex) + ']'
                 zeroAreaFaces.append(componentName)
@@ -149,14 +149,14 @@ def zeroAreaFaces(list, SLMesh):
     return zeroAreaFaces
 
 
-def zeroLengthEdges(list, SLMesh):
+def zeroLengthEdges(list, SLMesh, treshold=0.00000001):
     zeroLengthEdges = []
     selIt = om.MItSelectionList(SLMesh)
     while not selIt.isDone():
         edgeIt = om.MItMeshEdge(selIt.getDagPath())
         objectName = selIt.getDagPath().getPath()
         while not edgeIt.isDone():
-            if edgeIt.length() < 0.00000001:
+            if edgeIt.length() < treshold:
                 componentName = str(objectName) + \
                     '.f[' + str(edgeIt.index()) + ']'
                 zeroLengthEdges.append(componentName)
@@ -214,14 +214,14 @@ def openEdges(list, SLMesh):
     return openEdges
 
 
-def poles(list, SLMesh):
+def poles(list, SLMesh, edgeCount=5):
     poles = []
     selIt = om.MItSelectionList(SLMesh)
     while not selIt.isDone():
         vertexIt = om.MItMeshVertex(selIt.getDagPath())
         objectName = selIt.getDagPath().getPath()
         while not vertexIt.isDone():
-            if vertexIt.numConnectedEdges() > 5:
+            if vertexIt.numConnectedEdges() > edgeCount:
                 vertexIndex = vertexIt.index()
                 componentName = str(objectName) + \
                     '.vtx[' + str(vertexIndex) + ']'
